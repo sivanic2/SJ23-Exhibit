@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CSV Media List Generator</title>
+
+<style>
+
+:root {
+
+--primary: #2563eb;
+
+--bg: #f8fafc;
+
+--surface: #ffffff;
+
+--border: #e2e8f0;
+
+--text: #1e293b;
+
+}
+
+body {
+
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+background-color: var(--bg);
+
+color: var(--text);
+
+margin: 0;
+
+padding: 20px;
+
+line-height: 1.5;
+
+}
+
+.container {
+
+max-width: 950px;
+
+margin: 0 auto;
+
+}
+
+header {
+
+text-align: center;
+
+margin-bottom: 30px;
+
+}
+
+h1 { color: var(--primary); margin-bottom: 5px; font-size: 28px; }
+
+p { color: #64748b; margin-top: 0; }
+
+/ Controls Section /
+
+.controls-area {
+
+background: var(--surface);
+
+padding: 20px;
+
+border-radius: 10px;
+
+box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+
+margin-bottom: 30px;
+
+display: flex;
+
+gap: 15px;
+
+}
+
+.btn {
+
+padding: 10px 20px;
+
+border: none;
+
+border-radius: 6px;
+
+font-weight: 600;
+
+cursor: pointer;
+
+font-size: 14px;
+
+display: inline-flex;
+
+align-items: center;
+
+gap: 8px;
+
+}
+
+.btn-primary { background-color: var(--primary); color: white; }
+
+.btn-primary:hover { background-color: #1d4ed8; }
+
+.btn-success { background-color: #10b981; color: white; margin-left: auto; }
+
+.btn-success:hover { background-color: #059669; }
+
+/ Items Container /
+
+#items-list {
+
+display: flex;
+
+flex-direction: column;
+
+gap: 20px;
+
+margin-bottom: 40px;
+
+}
+
+.input-row {
+
+background: var(--surface);
+
+padding: 20px;
+
+border-radius: 8px;
+
+border: 1px solid var(--border);
+
+display: grid;
+
+grid-template-columns: 2fr 3fr 1.5fr 2fr 2fr auto;
+
+gap: 15px;
+
+align-items: center;
+
+}
+
+.field-group {
+
+display: flex;
+
+flex-direction: column;
+
+gap: 6px;
+
+}
+
+label {
+
+font-size: 12px;
+
+font-weight: 700;
+
+color: #64748b;
+
+text-transform: uppercase;
+
+}
+
+input {
+
+padding: 10px 12px;
+
+border: 1px solid var(--border);
+
+border-radius: 4px;
+
+font-size: 14px;
+
+width: 100%;
+
+box-sizing: border-box;
+
+transition: border-color 0.2s;
+
+}
+
+input:focus {
+
+outline: none;
+
+border-color: var(--primary);
+
+}
+
+/ Preview Section /
+
+.preview-container {
+
+background: #1e293b;
+
+color: #a5f3fc;
+
+padding: 20px;
+
+border-radius: 8px;
+
+font-family: monospace;
+
+white-space: pre-wrap;
+
+overflow-x: auto;
+
+max-height: 300px;
+
+width: 100%;
+
+box-sizing: border-box;
+
+}
+
+.preview-label {
+
+color: #94a3b8;
+
+font-size: 12px;
+
+text-transform: uppercase;
+
+margin-bottom: 5px;
+
+display: block;
+
+}
+
+@media (max-width: 900px) {
+
+.input-row {
+
+grid-template-columns: 1fr 1fr;
+
+grid-template-rows: auto auto auto auto auto;
+
+}
+
+.field-group:first-child { grid-column: span 2; }
+
+.field-group:last-child { grid-column: span 2; display: flex; justify-content: center; margin-top: 10px;}
+
+}
+
+/ Readonly styling for defaults /
+
+.readonly-val { background: #f1f5f9; color: #64748b; border-color: transparent !important; font-weight: bold; cursor: default; }
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+<h1>CSV Media List Generator</h1>
+
+<p>Add your media entries below. Defaults for Time and Cache are applied automatically.</p>
+
+</header>
+
+<div class="controls-area">
+
+<button class="btn btn-primary" onclick="add newRow()">+ New Entry</button>
+
+<button class="btn btn-success" onclick="downloadCSV()"> Download CSV File</button>
+
+</div>
+
+<div id="items-list">
+
+<!-- Rows will be injected here -->
+
+</div>
+
+<label class="preview-label">Preview Window (Validates Formatting)</label>
+
+<div class="preview-container" id="csv-preview-box">...</div>
+
+</div>
+
+<script>
+
+// Initialization
+
+function generateId() { return 'row_' + Math.random().toString(36).substr(2, 9); }
+
+function formatToMdyYHM(dateStr) {
+
+if(!dateStr) return "";
+
+const d = new Date(dateStr);
+
+const month = String(d.getMonth() + 1).padStart(2, '0');
+
+const day = String(d.getDate()).padStart(2, '0'); // Request asked for M/d/yy but padding is safer.
+
+// strict "M/d" implies no padding sometimes, let's stick to user prompt strictly if possible but standard web dates usually pad.
+
+// Prompt: "M/d/yy h:mm". I will use split logic to be strict or just padStart(1,'')?
+
+// Let's do padStart(2,0) as that is standard for CSV parsing usually, but to match M/d strictly:
+
+const m = d.getMonth() + 1;
+
+const dayVal = d.getDate();
+
+let year = String(d.getFullYear()).slice(-2);
+
+let hours = d.getHours(); // Use 24h or 12h? "h:mm" usually implies 12h in some contexts, but digital inputs often give 24. Let's output 24h standard ISO for reliability unless requested otherwise.
+
+let minutes = String(d.getMinutes()).padStart(2, '0');
+
+// Prompt format: M/d/yy h:mm
+
+return
+m
+/
+m/{dayVal}/
+y
+e
+a
+r
+year{hours}:${minutes};
+
+}
+
+function escapeCSV(text) {
+
+if (text.includes(',') || text.includes('"') || text.includes('\n')) {
+
+return "${text.replace(/"/g, '""')}";
+
+}
+
+return text;
+
+}
+
+let rows = [];
+
+function add newRow() {
+
+const id = generateId();
+
+rows.push(id);
+
+const div = document.createElement('div');
+
+div.className = 'input-row';
+
+div.id = id;
+
+div.innerHTML =
+
+<div class="field-group">
+
+<label>Name (Ref)</label>
+
+<input type="text" data-field="name" placeholder="Video Content Name" oninput="updatePreview()">
+
+</div>
+
+<div class="field-group">
+
+<label>URL</label>
+
+<input type="url" data-field="url" placeholder="https://example.com/media.mp4" oninput="updatePreview()">
+
+</div>
+
+<div class="field-group">
+
+<label>Duration (H:MM:SS)</label>
+
+<input type="text" data-field="duration" placeholder="0:00:00" oninput="updatePreview()">
+
+</div>
+
+<div class="field-group">
+
+<label>Start On</label>
+
+<input type="datetime-local" data-field="start" oninput="updatePreview()">
+
+</div>
+
+<div class="field-group">
+
+<label>End By</label>
+
+<input type="datetime-local" data-field="end" oninput="updatePreview()">
+
+</div>
+
+<div class="field-group">
+
+<label>Update Interval / Cache</label>
+
+<div style="display:flex; gap:10px; width:100%;">
+
+<input type="text" value="1:00:00" readonly class="readonly-val" title="Default">
+
+<input type="text" value="yes" readonly class="readonly-val" title="Default">
+
+</div>
+
+</div>
+
+;
+
+document.getElementById('items-list').appendChild(div);
+
+updatePreview();
+
+}
+
+function updatePreview() {
+
+const allRows = document.querySelectorAll('.input-row');
+
+// CSV Header
+
+let csv = "Name,URL,Duration,Update Interval,Start On,End By,Cache\n";
+
+allRows.forEach(row => {
+
+const inputs = row.querySelectorAll('input');
+
+// Map data fields
+
+// Row structure: Name(0), Url(1), Duration(2), Start(3), End(4) + the readonly ones.
+
+// Wait, my grid puts Update Interval and Cache in the last column group containing two inputs.
+
+// Let's grab them by index to be safer based on HTML generation order.
+
+const name = escapeCSV(inputs[0].value);
+
+const url = escapeCSV(inputs[1].value);
+
+const dur = inputs[2].value;
+
+const startRaw = inputs[3].value;
+
+const endRaw = inputs[4].value;
+
+// Defaults are hardcoded in generation logic for Update Interval and Cache
+
+// We assume the readonly inputs (5,6) are just visual. The JS logic will apply them.
+
+if (!name && !url) return;
+
+const formattedStart = formatToMdyYHM(startRaw);
+
+const formattedEnd = formatToMdyYHM(endRaw);
+
+csv +=
+n
+a
+m
+e
+,
+name,{url},
+d
+u
+r
+,
+1
+:
+00
+:
+00
+,
+dur,1:00:00,{formattedStart},${formattedEnd},yes\n;
+
+});
+
+document.getElementById('csv-preview-box').textContent = csv;
+
+}
+
+function downloadCSV() {
+
+const content = document.getElementById('csv-preview-box').textContent;
+
+if(content.trim().length < 10) {
+
+alert("Please add at least one item with a Name or URL.");
+
+return;
+
+}
+
+const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+
+const url = URL.createObjectURL(blob);
+
+const link = document.createElement("a");
+
+link.setAttribute("href", url);
+
+link.setAttribute("download", "media_list.csv");
+
+link.style.visibility = 'hidden';
+
+document.body.appendChild(link);
+
+link.click();
+
+document.body.removeChild(link);
+
+}
+
+// Boot up
+
+add newRow();
+
+updatePreview();
+
+</script>
+
+</body>
+
+</html>
