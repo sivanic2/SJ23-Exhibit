@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "defaults": {
+    "duration": 10,
+    "contentMode": "fit"
+  },
+  "items": [
+    {
+      "url": "TestImage.png"
+    },
+    {
+      "url": "https://github.com/sivanic2/SJ23-Exhibit/raw/refs/heads/main/Intro1.mp4"
+    }
+  ]
+}
