@@ -1,21 +1,67 @@
 {
   "version": 1,
+
+  "device": {
+    "group": null,
+    "tags": []
+  },
+
   "defaults": {
     "duration": 10,
     "contentMode": "fit"
   },
-  "items": [
+
+  "media": [
     {
+      "id": "test-image-2",
+      "type": "image",
       "url": "https://raw.githubusercontent.com/sivanic2/SJ23-Exhibit/refs/heads/main/20Test/Test2.png"
     },
     {
+      "id": "intro-video",
+      "type": "video",
       "url": "https://github.com/sivanic2/SJ23-Exhibit/raw/refs/heads/main/Intro1.mp4"
     },
     {
+      "id": "test-image-3",
+      "type": "image",
       "url": "https://raw.githubusercontent.com/sivanic2/SJ23-Exhibit/refs/heads/main/20Test/Test3.png"
     },
     {
+      "id": "loading-video",
+      "type": "video",
       "url": "https://github.com/sivanic2/SJ23-Exhibit/raw/refs/heads/main/Loading.mp4"
     }
-  ]
+  ],
+
+  "playlists": [
+    {
+      "id": "main",
+      "name": "Main Playlist",
+      "items": [
+        {
+          "media": "test-image-2"
+        },
+        {
+          "media": "intro-video"
+        },
+        {
+          "media": "test-image-3"
+        },
+        {
+          "media": "loading-video"
+        }
+      ]
+    }
+  ],
+
+  "schedules": [],
+
+  "overlays": [],
+
+  "behaviour": {
+    "offlineMode": "continue",
+    "retryInterval": 300,
+    "showNetworkIndicator": true
+  }
 }
