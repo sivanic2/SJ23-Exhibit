@@ -7,7 +7,7 @@
   },
 
   "defaults": {
-    "duration": 10,
+    "duration": 5,
     "contentMode": "fit"
   },
 
@@ -40,7 +40,7 @@
       "name": "Main Playlist",
       "items": [
         {
-          "media": "test-image-20"
+          "media": "no-test-image-20"
         },
         {
           "media": "intro-video"
