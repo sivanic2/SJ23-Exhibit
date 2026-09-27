@@ -1,32 +1,83 @@
-"playlists": [
-  {
-    "id": "main",
-    "name": "Main Playlist",
-    "items": [
-      {
-        "media": "test-image-2"
-      },
-      {
-        "media": "intro-video"
-      },
-      {
-        "media": "test-image-3"
-      },
-      {
-        "media": "loading-video"
-      }
-    ]
+{
+  "version": 1,
+
+  "device": {
+    "group": null,
+    "tags": []
   },
-  {
-    "id": "images-only",
-    "name": "Images Only",
-    "items": [
-      {
-        "media": "test-image-2"
-      },
-      {
-        "media": "test-image-3"
-      }
-    ]
+
+  "defaults": {
+    "duration": 10,
+    "contentMode": "fit"
+  },
+
+  "media": [
+    {
+      "id": "test-image-2",
+      "type": "image",
+      "url": "https://raw.githubusercontent.com/sivanic2/SJ23-Exhibit/refs/heads/main/20Test/Test2.png",
+      "duration": 5,
+      "contentMode": "fill"
+    },
+    {
+      "id": "intro-video",
+      "type": "video",
+      "url": "https://github.com/sivanic2/SJ23-Exhibit/raw/refs/heads/main/Intro1.mp4"
+    },
+    {
+      "id": "test-image-3",
+      "type": "image",
+      "url": "https://raw.githubusercontent.com/sivanic2/SJ23-Exhibit/refs/heads/main/20Test/Test3.png",
+      "duration": 5,
+      "contentMode": "fill"
+    },
+    {
+      "id": "loading-video",
+      "type": "video",
+      "url": "https://github.com/sivanic2/SJ23-Exhibit/raw/refs/heads/main/Loading.mp4"
+    }
+  ],
+
+  "playlists": [
+    {
+      "id": "main",
+      "name": "Main Playlist",
+      "items": [
+        {
+          "media": "test-image-2"
+        },
+        {
+          "media": "intro-video"
+        },
+        {
+          "media": "test-image-3"
+        },
+        {
+          "media": "loading-video"
+        }
+      ]
+    },
+    {
+      "id": "images-only",
+      "name": "Images Only",
+      "items": [
+        {
+          "media": "test-image-2"
+        },
+        {
+          "media": "test-image-3"
+        }
+      ]
+    }
+  ],
+
+  "schedules": [],
+
+  "overlays": [],
+
+  "behaviour": {
+    "offlineMode": "continue",
+    "retryInterval": 300,
+    "showNetworkIndicator": true
   }
-]
+}
