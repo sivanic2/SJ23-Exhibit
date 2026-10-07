@@ -71,7 +71,17 @@
     }
   ],
 
-  "schedules": [],
+  "schedules": [
+  {
+    "id": "test-schedule",
+    "playlist": "images-only",
+    "days": null,
+    "startTime": "00:00",
+    "endTime": "23:59",
+    "startDate": null,
+    "endDate": null
+  }
+],
 
   "overlays": [],
 
